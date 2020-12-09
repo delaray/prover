@@ -117,7 +117,7 @@
     (setf binding (value-var var (get (car nodes) 'bindings)))
     (when nodes
       (cond (binding
-             (if (not (variable-entity-p binding))
+             (if (not (variable-p binding))
                binding
                (find-binding-in-tree binding (list (car nodes)))))
             ((setf result (find-binding-in-tree var (child (car nodes))))
@@ -133,7 +133,7 @@
         ((listp (car clause))
          (union  (clause-entity-variables (car clause))
                 (clause-entity-variables (cdr clause))))
-        ((variable-entity-p (car clause))
+        ((variable-p (car clause))
          (cons (car clause)(clause-entity-variables (cdr clause))))
         (t
          (clause-entity-variables (cdr clause)))))

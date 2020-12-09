@@ -422,9 +422,7 @@
 ;;; This creates a simple-clause entity as well as its atomic components.
 
 (defmethod PARSE-CLAUSE ((clause-description LIST) &key variables (database *database*))
-  (cond ((typep clause-description 'clause-entity)
-	  clause-description)
-	((atom clause-description)
+  (cond ((atom clause-description)
 	 (parse-atomic-argument clause-description
 				:database database
 				:variables variables))
@@ -459,6 +457,7 @@
 ;;;--------------------------------------------------------------------------
 
 (defmethod PARSE-CLAUSE ((clause-description NULL) &rest rest)
+  (declare (ignore rest))
   nil)
 
 ;;;--------------------------------------------------------------------------
@@ -517,6 +516,7 @@
   (let* ((predicate-name  (first clause-description))
     	 (predicate (ensure-predicate predicate-name :database database))
 	 (clause-part (second clause-description))
+	 (clause (cons predicate clause-part))
 	 (time-of-clause (third clause-description))
 	 (constraint (fourth clause-description)))
 
@@ -534,7 +534,7 @@
 	(parse-clause constraint :database database :variables variables)))
     
     ;; Create the clause object & add to clause database
-    (values (make-holds-clause predicate clause-part time-of-clause constraint
+    (values (make-holds-clause clause time-of-clause constraint
 			       :variables variables
 			       :description clause-description
 			       :class class)

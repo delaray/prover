@@ -292,6 +292,7 @@
 ;;;--------------------------------------------------------------------------
 
 (defmethod INITIALIZE-INSTANCE :after ((clause TEMPORAL-CLAUSE-ENTITY) &rest initargs)
+  (declare (ignore initargs))
   ;; Compute the temporal product.
   (setf (temporal-clause-product clause)
     (compute-relations-product (temporal-clause-relations clause))))

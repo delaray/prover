@@ -153,11 +153,13 @@
 ;;;--------------------------------------------------------------------------
 
 (defmethod FIND-CONSTANT ((constant SYMBOL) &rest rest &key (database *database*))
+  (declare (ignore rest))
   (find-constant (symbol-name constant) :database database))
 
 ;;;--------------------------------------------------------------------------
 
 (defmethod FIND-CONSTANT ((constant INTEGER) &rest rest &key (database *database*))
+  (declare (ignore rest))
   (find-constant (symbol-name constant) :database database))
 
 ;;;--------------------------------------------------------------------------
@@ -270,6 +272,7 @@
 ;;;--------------------------------------------------------------------------
 
 (defmethod FIND-PREDICATE ((predicate SYMBOL) &rest rest &key (database *database*))
+  (declare (ignore rest))
   (find-predicate (symbol-name predicate) :database database))
 
 ;;;--------------------------------------------------------------------------
@@ -341,7 +344,7 @@
   (let ((predicates nil))
     (map-predicates #'(lambda (p)(push p predicates)) :database database)
     (when sort
-      (sort predicates #'string<= :key #'object-name))
+      (setf predicates (sort predicates #'string<= :key #'object-name)))
     predicates))
 
 ;;;--------------------------------------------------------------------------
@@ -383,7 +386,6 @@
 (defmethod MAKE-VARIABLE :around ((name STRING) 
 				  &key
 				  (database *database*))
-  (declare (ignore rest))
   ;; Ensure variable name starts with a "?"
   (unless (char= (aref name 0) #\?)
     (setf name (concatenate 'STRING "?" name)))
@@ -486,7 +488,7 @@
 ;;; on the value of <deepest-p>.
 
 (defmethod VARIABLE-VALUE ((variable VARIABLE-ENTITY) &key (deepest-p t))
-  (cond ((and deepest-p (variable-entity-p (object-value variable)))
+  (cond ((and deepest-p (variable-p (object-value variable)))
 	 (variable-value (object-value variable)))
 	(t
 	 (object-value variable))))

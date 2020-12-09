@@ -57,7 +57,8 @@
 
 (defun MAKE-TEMPORAL-CLAUSE (interval-1 temporal-relations interval-2 &key description)
   ;; Create the temporal clause
-  (make-clause 'TEMPORAL-CLAUSE-ENTITY 
+  (make-clause 'TEMPORAL-CLAUSE-ENTITY
+	       #+IGNORE
 	       (find-predicate 'TEMPORAL)
 	       `(,interval-1 ,temporal-relations ,interval-2)
 	       :description description))
@@ -75,7 +76,8 @@
 
 ;;;----------------------------------------------------------------------------
 
-(defmethod MAKE-TEMPORAL-CONSTRAINT ((I1 symbol) relations (I2 symbol) &key (database *database*))
+(defmethod MAKE-TEMPORAL-CONSTRAINT ((I1 symbol) relations (I2 symbol)
+				     &key (database *database*))
   (make-temporal-constraint (find-constant I1 :database database)
 			    relations
 			    (find-constant I2 :database database)
@@ -554,13 +556,13 @@
       (temporal-clause-components temporal-clause)
     (declare (ignore relations))
     (let ((relevant-clauses nil))
-      (cond ((and (variable-entity-p i1)
-		  (variable-entity-p i2))
+      (cond ((and (variable-p i1)
+		  (variable-p i2))
 	     (setf relevant-clauses (all-temporal-clauses)))
-	    ((variable-entity-p i1)
+	    ((variable-p i1)
 	     (setf relevant-clauses
 	       (find-temporal-clauses i1 :database database)))
-	    ((variable-entity-p i2)
+	    ((variable-p i2)
 	     (setf relevant-clauses
 	       (find-temporal-clauses i2 :database database)))
 	    (t nil))
